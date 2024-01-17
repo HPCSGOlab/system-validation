@@ -3,6 +3,7 @@
 #include <cublas_v2.h>
 #include <cblas.h>
 #include <getopt.h>
+#include <unistd.h>
 
 using namespace std::chrono;
 
@@ -93,6 +94,9 @@ int main(int argc, char **argv) {
     }
 
     if (use_cpu) {
+	int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
+	openblas_set_num_threads(num_cores);
+
         high_resolution_clock::time_point start = high_resolution_clock::now();
         cpu_multiply(A, B, C, N, iterations);
         high_resolution_clock::time_point end = high_resolution_clock::now();
