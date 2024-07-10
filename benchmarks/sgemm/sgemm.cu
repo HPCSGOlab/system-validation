@@ -57,7 +57,7 @@ void gpu_multiply(float *A, float *B, float *C, size_t N, size_t iterations) {
 }
 
 int main(int argc, char **argv) {
-    size_t N;
+    size_t N=0;
     size_t iterations = 1;
     bool use_cpu = false;
 
@@ -94,8 +94,8 @@ int main(int argc, char **argv) {
     }
 
     if (use_cpu) {
-	int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
-	openblas_set_num_threads(num_cores);
+	    //int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
+	    //openblas_set_num_threads(num_cores);
 
         high_resolution_clock::time_point start = high_resolution_clock::now();
         cpu_multiply(A, B, C, N, iterations);
