@@ -46,7 +46,7 @@ void gpu_multiply(float *A, float *B, float *C, size_t N, size_t iterations) {
     float gflops = iterations * (2.0f * N * N * N - N * N) / (elapsedTime / 1000.0f) / 1e9;
     printf("GPU,%zu,%f,%f\n", N, elapsedTime / 1000.0, gflops);
 
-    cublasGetMatrix(N, N, sizeof(float), d_C, N, C, N);
+//    cublasGetMatrix(N, N, sizeof(float), d_C, N, C, N);
 
     cudaEventDestroy(start);
     cudaEventDestroy(stop);
@@ -57,7 +57,7 @@ void gpu_multiply(float *A, float *B, float *C, size_t N, size_t iterations) {
 }
 
 int main(int argc, char **argv) {
-    size_t N=0;
+    size_t N = 0;
     size_t iterations = 1;
     bool use_cpu = false;
 
@@ -88,14 +88,22 @@ int main(int argc, char **argv) {
     float *B = new float[N * N];
     float *C = new float[N * N];
 
+    unsigned int seed = 243;
+#pragma omp parallel for private(seed)
     for (size_t i = 0; i < N * N; ++i) {
-        A[i] = static_cast<float>(rand()) / RAND_MAX;
-        B[i] = static_cast<float>(rand()) / RAND_MAX;
+        A[i] = static_cast<float>(rand_r(&seed)) / RAND_MAX;
+        B[i] = static_cast<float>(rand_r(&seed)) / RAND_MAX;
     }
 
     if (use_cpu) {
-	    //int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
-	    //openblas_set_num_threads(num_cores);
+	int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
+        fprintf(stderr, "Detected %d cores.\n", num_cores);
+	openblas_set_num_threads(num_cores);
+
+	int num_threads = openblas_get_num_threads();
+
+        fprintf(stderr, "Number of threads OpenBLAS is using: %d\n", num_threads);
+
 
         high_resolution_clock::time_point start = high_resolution_clock::now();
         cpu_multiply(A, B, C, N, iterations);
