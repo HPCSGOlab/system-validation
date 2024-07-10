@@ -96,13 +96,13 @@ int main(int argc, char **argv) {
     }
 
     if (use_cpu) {
-	int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
+        int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
         fprintf(stderr, "Detected %d cores.\n", num_cores);
-	openblas_set_num_threads(num_cores);
+        //openblas_set_num_threads(num_cores);
 
-	int num_threads = openblas_get_num_threads();
+        //int num_threads = openblas_get_num_threads();
 
-        fprintf(stderr, "Number of threads OpenBLAS is using: %d\n", num_threads);
+        //fprintf(stderr, "Number of threads OpenBLAS is using: %d\n", num_threads);
 
 
         high_resolution_clock::time_point start = high_resolution_clock::now();
